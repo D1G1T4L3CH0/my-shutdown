@@ -1,0 +1,15 @@
+#SCRIPT START#
+
+message	Calulator (wait)...
+run		%windir%\system32\calc.exe
+wait	calc.exe
+
+message	Notepad (wait)...
+run		%windir%\system32\notepad.exe
+wait	notepad.exe
+
+message	Calulator...
+run		%windir%\system32\calc.exe
+
+message	Notepad...
+run		%windir%\system32\notepad.exe
