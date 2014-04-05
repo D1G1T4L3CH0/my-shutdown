@@ -21,3 +21,30 @@ MESSAGE		<Type your message.>
 WAIT		<EXE>
 
 A good way to run this script is to make a shortcut to it on your desktop, or put it in the group policy shutdown scripts. If you use a shurtcut, you should edit the target box of the shortcut to include the name of your script file at the end with a space separating it from the rest of the text there, and then you should set the shortcut to run as admin bu clicking Advanced on the General tab.
+
+Important, you must add #SCRIPT START# to the top of your script for it to be recognized as a script. Also, make sure your text editor isn't changing tabs to spaces. If it does, it will ruin your script. Notepad should work fine. I suggest Notepad++ though, then you can view the tabs as symbols.
+
+A good working example of a script that's actually useful is my own script. Take a look below. I just run it any time I'm shutting down for a while, not a reboot.
+---- ---- ---- ---- ---- ----
+#SCRIPT START#
+; This is a comment line.
+; Use TABS to separate values!
+; Drive and path are not required if the executable is in your path variable.
+
+message	CCleaner...
+run		C:\Program Files\CCleaner\CCleaner.exe	/AUTO
+wait	CCleaner64.exe
+
+message	Wise Registry Cleaner...
+run		C:\Program Files (x86)\Wise\Wise Registry Cleaner\WiseRegCleaner.exe	-a
+wait	WiseRegCleaner.exe
+
+message	Ultra Defrag...
+run		udefrag		--defragment -m C: F:
+run		udefrag		--defragment -m D:
+run		udefrag		--defragment -m E:
+wait	udefrag.exe
+
+message	Shutting down...
+run		shutdown	-s -t 0
+---- ---- ---- ---- ---- ----

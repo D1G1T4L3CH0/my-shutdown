@@ -13,11 +13,18 @@ pushd "%~dp0"
 
 :: Setup the script variable and make sure the file exists.
 if "%*" EQU "" goto usage
-set script=scripts\%*
+
+:: interactive mode
+if /i "%*" EQU "-i" (
+	call :interactive
+) else (
+	set script=scripts\%*
+)
+
 if /i "%script:~-4%" NEQ ".txt" set script=%script%.txt
 if not exist "%script%" goto usage
 
-:: Indentify the file as a script. If not, abort.
+:: Identify the file as a script. If not, abort.
 findstr /c:"#SCRIPT START#" "%script%">nul || goto wrongfile
 
 :: Read the script and execute the lines. You could easily add in your own custom commands here.
@@ -32,7 +39,9 @@ for /f "usebackq tokens=1-3 delims=	" %%a in ("%script%") do (
 		:: Give a little time for the process to start. If not a wait command may get executed before the process is actually running and finish immediately. This would cause the next command to execute before the last one closes.
 		timeout /t 1 >nul
 	)
-	if /i "%%a" EQU "shutdown"	shutdown -s -t 0
+	if /i "%%a" EQU "shutdown"	shutdown /p
+	if /i "%%a" EQU "hshutdown"	shutdown /p /hybrid
+	if /i "%%a" EQU "hibernate"	shutdown /h
 	if /i "%%a" EQU "close"		taskkill /im "%%b">nul 2>nul
 	if /i "%%a" EQU "killhung"	taskkill /f /fi "status eq not responding">nul 2>nul
 )
@@ -62,4 +71,11 @@ goto :EOF
 :notadmin
 	echo Please run this script as administrator.
 	pause
+goto :EOF
+
+:interactive
+	echo Please choose a script. Type the filename and press enter.
+	for %%x in (scripts\*.txt) do echo %%~nx
+	set /p script=Filename: 
+	set script=scripts\%script%
 goto :EOF
